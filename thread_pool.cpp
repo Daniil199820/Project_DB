@@ -9,6 +9,8 @@
 #include <chrono>
 #include <string>
 #include <functional>
+
+
 namespace tp{
     
     template<typename T>
@@ -97,22 +99,9 @@ namespace tp{
 
 }
 
-void f(std::string& n1){
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    std::cout<<n1<<"\n";
-    n1 = "ddd";
-}
-
 int main(){
 
-    tp::Thread_pool my_pool;
+    tp::Thread_pool pool_thread_DB;
 
-    std::function<void()> my_func = [](){std::this_thread::sleep_for(std::chrono::milliseconds(3000));  std::cout<< "dawd\n";}; 
-
-    my_pool.submit(std::move(my_func));
-    std::string dd = "wwq";
-    std::function<void()> my_func2 = std::bind(f,std::ref(dd));
-    my_pool.submit(std::move(my_func2));
-    //std::cout<< dd<<"\n";
     return 0;
 }
