@@ -99,9 +99,9 @@ namespace tp{
 
 }
 
-int main(){
+//int main(){
 
-    tp::Thread_pool pool_thread_DB;
+//    tp::Thread_pool pool_thread_DB;
 
-    return 0;
-}
+//    return 0;
+//}
