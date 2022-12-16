@@ -66,6 +66,14 @@ public:
         return {"Ok.\n"};
     }
 
+    std::string create_table(std::list<std::string>& args){
+
+
+        auto arguments = args;
+
+        
+    }
+
     std::string intersection(std::list<std::string>& args){
         
         decltype(tables) temp_tables = tables;
@@ -147,7 +155,7 @@ public:
 private:
 
     enum Type_num {int_type, double_type, string_type} type_n;
-
+    
     //using Table = std::unordered_map<Type_num,std::string,std::hash<int>>;
     using Table = std::unordered_map<const int ,std::string,std::hash<int>>;
     Table A;
