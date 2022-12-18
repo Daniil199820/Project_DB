@@ -4,7 +4,7 @@ project(27.DB)
 
 find_package(Threads)
 
-add_executable(main thread_pool.cpp )
+add_executable(main main.cpp )
 
 set_target_properties(main PROPERTIES
         CXX_STANDARD 17
