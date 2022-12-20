@@ -5,13 +5,9 @@
 #include <variant>
 #include <queue>
 #include <utility>
-
-class Parser{
-public:
-   void get_string(){}
-
-};
-class Application;
+#include "DB_parcer.hpp"
+#include "DB_request.hpp"
+/*class Application;
 
 class IHandlerState{
 public:
@@ -19,28 +15,7 @@ public:
     //virtual ~IHandlerState() = 0;
 };
 
-std::vector<std::string> Parce_str(std::string& str){
-    if(str.empty()){
-        return std::vector<std::string>{};
-    }
-    std::vector<std::string> result_array;
-    std::string temp_array;
-    for(int i=0; i<str.size(); ++i){
-        if(str[i]=='\t' || str[i]==' ' || str[i]=='\n'){
-            if(!temp_array.empty()){
-                result_array.emplace_back(temp_array);
-            }
-        }
-        else if(str[i] == '(' || str[i]== ')' || str[i]== ','){
-            result_array.emplace_back(std::string{str[i]});
-            temp_array.clear();
-        }
-        else{
-            temp_array += str[i];
-        }
-    }
-    return result_array;
-}
+
 
 class NullState:public IHandlerState{
 public:
@@ -85,53 +60,6 @@ int find_type(const std::string& str_type){
     // type doesn't found
     return -1;
 }
-
-
-class Create_Process_Arg_State:public IHandlerState{
-public: 
-    std::string write(std::queue<std::string>& str_vec) override {
-        std::vector< std::pair<int,std::string> > vec_pairs;
-
-        while(true){
-
-            auto type_index = find_type(str_vec.front());
-            if(type_index == -1){
-            
-                return {""};/*some error*/
-            }
-            else{
-                str_vec.pop();
-            }
-
-            if(str_vec.front() == "," || str_vec.front() == ")"){
-                return {""};
-                //wait name after type definition
-            }
-            else{
-                vec_pairs.push_back(std::make_pair<int, std::string>(std::move(type_index),std::move(str_vec.front())));
-                str_vec.pop();
-            }
-
-            if(str_vec.front() == ")"){
-                break;
-            }
-
-            if(str_vec.front() == ","){
-                str_vec.pop();
-            }
-        
-        }
-
-        int x =0;
-        x = 345;
-
-        
-    }
-};
-
-
-
-
 
 struct Column{
 private:
@@ -203,10 +131,6 @@ public:
         }
     }
 };
-template<typename T>
-void my_print(T val){
-    std::cout<<val<<"\n";
-}
 
 void Create_Table(const std::string& name, std::vector< std::pair<int, std::string> >& pairs){
     
@@ -216,6 +140,75 @@ void Create_Table(const std::string& name, std::vector< std::pair<int, std::stri
         columns.emplace_back(it.first,it.second);
     }
 }
+/*
+class Create_Process_Arg_State:public IHandlerState{
+public: 
+    std::string write(std::queue<std::string>& str_vec) override {
+        std::vector< std::pair<int,std::string> > vec_pairs;
+        std::vector<std::string> names;
+
+        if(str_vec.empty()){
+            return {"String  is empty."};
+        }
+
+        if(str_vec.back() != ")"){
+            return {"Last symbol should be a )."};
+        }
+
+        while(true){
+
+            auto type_index = find_type(str_vec.front());
+            if(type_index == -1){
+            
+                return {""};/*some error
+            }
+            else{
+                str_vec.pop();
+            }
+
+            if(str_vec.front() == "," || str_vec.front() == ")"){
+                return {""};
+                //wait name after type definition
+            }
+            else{
+                vec_pairs.push_back(std::make_pair<int, std::string>(std::move(type_index),std::move(str_vec.front())));
+                str_vec.pop();
+            }
+
+            if(str_vec.front() == ")"){
+                break;
+            }
+            
+            
+
+            if(str_vec.front() == ","){
+                str_vec.pop();
+            }
+        
+        }
+        if(!vec_pairs.empty()){
+          
+        }
+
+        else{
+            return {"No arguments."};
+        }
+
+
+    }
+};
+*/
+
+
+
+
+
+template<typename T>
+void my_print(T val){
+    std::cout<<val<<"\n";
+}
+
+
 
 
 
@@ -230,6 +223,14 @@ void print(T d){
 } 
 
 int main(){
+
+    Parcer<std::vector<std::string>> c;
+    auto vec =  c.process("Create TABLE name_table(CUSTOM_INT name_col_1, CUSTOM_DOUBLE name_col_2)");
+    for(auto& it:vec){
+        std::cout<< it<< "\n";
+    }
+    
+
    // std::variant<int,double> var = 1.2;
   /*  while(true){
     size_t a = 0;
@@ -244,8 +245,12 @@ int main(){
     }
 
 */
+  //  auto vec = Parce_str("Create TABLE name_table( CUSTOM_INT name_col_1, CUSTOM_DOUBLE name_col_2");
+ //   for(auto& it: vec){
+  //      std::cout<< it << "\n";
+  //  }
 
-    Create_Process_Arg_State cc;
+  /*  Create_Process_Arg_State cc;
     std::queue<std::string> qq;
     qq.push("CUSTOM_INT");
     qq.push("name");
@@ -254,8 +259,8 @@ int main(){
     qq.push("name_2");
     qq.push(")");
     qq.push("CUSTOM_STRING");
-    qq.push("name_3");
-    cc.write(qq);
+    qq.push("name_3");*/
+  //  cc.write(vec);
 
     return 0;
 }

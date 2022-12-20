@@ -309,7 +309,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="D:\Project_DB\thread_pool.cpp" />
+    <ClCompile Include="D:\Project_DB\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="D:\Project_DB\build_windows\ZERO_CHECK.vcxproj">

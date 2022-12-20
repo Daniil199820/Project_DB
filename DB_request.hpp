@@ -146,3 +146,96 @@ private:
     }
 
 };
+
+
+class Application;
+
+class IHandlerState{
+public:
+    virtual std::string write(std::queue< std::string>& str_vec, Application* app) = 0;
+    virtual ~IHandlerState() = 0;
+};
+
+using IHandlerStatePtr = std::unique_ptr<IHandlerState>;
+
+class Create_State:public IHandlerState{
+public:
+    std::string write(std::queue<std::string>& str_vec) override {
+        std::cout<< "Create\n";
+        if(str_vec.front() == "TABLE"){
+            str_vec.pop();
+        }
+        else{
+            return std::string{""};
+        }
+    }
+};
+
+class Insert_State:public IHandlerState{
+public:
+    std::string write(std::queue<std::string>& str_vec) override{
+        std::cout<< "Insert\n";
+        if(str_vec.front() == "INTO"){
+
+        }
+        else{
+            return std::string{""};
+        }
+    }
+};
+
+class Insert_State_Table:public IHandlerState{
+public:
+    std::string write(std::queue<std::string>& str_vec) override{
+        // if we have this table 
+        if(str_vec.front())
+    }
+};
+
+class Delete_State:public IHandlerState{
+public:
+    std::cout<< "Delete\n";
+    std::string write(std::queue<std::string>& str_vec) override{
+        // if we have this table 
+        if(str_vec.front() )
+    }
+};
+
+class Select_State:public IHandlerState{
+public:
+    std::cout<< "Select\n";
+    std::string write(std::queue<std::string>& str_vec) override{
+        // if we have this table 
+        if(str_vec.front() )
+    }
+};
+
+class Drop_State:public IHandlerState{
+public:
+    std::cout<< "Drop\n";
+    std::string write(std::queue<std::string>& str_vec) override{
+        std::cout<< ""
+        if(str_vec.front() )
+    }
+};
+
+
+
+class NullState:public IHandlerState{
+public:
+    std::string write(std::queue<std::string>& str_vec) override{
+        auto it =  commands.find(str_vec.front());
+        if(it != commands.end())
+        {
+            auto str = str_vec.front();
+            str_vec.pop();
+
+
+        }
+    }
+
+private:
+    std::unordered_map<std::string, IHandlerState, std::hash<std::string>> commands = {{"CREATE", Create_State},{"INSERT", Insert_State}, {"SELECT", Select_State}, {"DELETE", Delete_State}, {"DROP", Drop_State}};
+
+};
+
