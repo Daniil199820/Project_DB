@@ -19,7 +19,7 @@ public:
     //virtual ~IHandlerState() = 0;
 };
 
-using IHandlerStatePtr = std::shared_ptr<IHandlerState>;
+using IHandlerStatePtr = std::unique_ptr<IHandlerState>;
 
 class Application{
 public:
@@ -87,7 +87,7 @@ public:
             str_vec.pop();
             app->set_current(IHandlerStatePtr{new Create_Process_Arg_State()});
             std::cout<<" da\n";
-            app->write(str_vec);    
+            //app->write(str_vec);    
         }
         else{
             return std::string{""};
@@ -105,7 +105,7 @@ public:
         if(str_vec.front() == "TABLE"){
             str_vec.pop();
             app->set_current(IHandlerStatePtr{new Create_Start_Arg_State()});
-            app->write(str_vec);
+            //app->write(str_vec);
         }
         else{
             return std::string{""};
@@ -178,16 +178,16 @@ public:
         {
             auto st = str.front();
             str.pop();
-            app->set_current(commands[st]);
-            app->write(str);
+            app->set_current(IHandlerStatePtr{commands[st]});
+            //app->write(str);
         }
         return std::string{""};
     }
 
 private:
-    std::unordered_map<std::string,std::shared_ptr<IHandlerState>, std::hash<std::string>> commands
-     = {{"CREATE",std::make_shared<Create_State>()},{"INSERT",std::make_shared<Insert_State>()},
-      {"SELECT",std::make_shared<Select_State>()},{"DELETE",std::make_shared <Delete_State>()}, {"DROP",std::make_shared <Drop_State>()}};
+    std::unordered_map<std::string,IHandlerState*, std::hash<std::string>> commands
+     = {{"CREATE",new Create_State()},{"INSERT",new Insert_State()},
+      {"SELECT",new Select_State()},{"DELETE",new Delete_State()}, {"DROP",new Drop_State()}};
 };
 
 

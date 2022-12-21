@@ -260,7 +260,11 @@ int main(){
     app.get()->set_current(IHandlerStatePtr{new NullState()});
     std::queue<std::string> ccc;
     std::queue<std::string> cc2;
-    app.get()->write(vec);
+    while(!vec.empty()){
+        app.get()->write(vec);
+        vec.pop();
+    }
+    
     /*ccc.push("CREATE");
     ccc.push("TABLE");
    // ccc.push("awd");
