@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include <string>
 #include <queue>
@@ -22,17 +23,18 @@ public:
                 }
             }
             else if(str[i] == '(' || str[i]== ')' || str[i]== ','){
+                result_array.emplace_back(temp_array);
                 result_array.emplace_back(std::string{str[i]});
                 temp_array.clear();
             }
             else{
                 temp_array += str[i];
+            
             }
         }
 
         container return_container;
         for(int i = 0; i< result_array.size(); ++i){
-            std::cout<<result_array[i];
             push_element(return_container,result_array[i]);
         }
 

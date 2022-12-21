@@ -7,6 +7,8 @@
 #include <utility>
 #include "DB_parcer.hpp"
 #include "DB_request.hpp"
+#include "DB_data.hpp"
+#include <utility>
 /*class Application;
 
 class IHandlerState{
@@ -222,15 +224,52 @@ void print(T d){
     std::cout<<d;
 } 
 
+
+class A{
+public:
+A(){
+    std::cout<<"A\n";
+}
+virtual ~A(){
+    std::cout<<"dsr A\n";
+}
+};
+
+class B:public A{
+public:
+B(){
+    std::cout <<"B\n";
+}
+~B(){
+    std::cout << "dsr B\n";
+}
+};
+
 int main(){
+    std::unique_ptr<A> ptr;
+    ptr = std::make_unique<B>();
 
-    Parcer<std::vector<std::string>> c;
-    auto vec =  c.process("Create TABLE name_table(CUSTOM_INT name_col_1, CUSTOM_DOUBLE name_col_2)");
-    for(auto& it:vec){
-        std::cout<< it<< "\n";
-    }
+    Parcer c;
+    auto vec =  c.process("CREATE TABLE name_table(CUSTOM_INT name_col_1, CUSTOM_DOUBLE name_col_2)");
+    //while(!vec.empty()){
+    //    std::cout<< vec.front()<<"\n";
+    //    vec.pop();
+   // }
     
-
+    auto app = std::make_unique<Application>();
+    app.get()->set_current(IHandlerStatePtr{new NullState()});
+    std::queue<std::string> ccc;
+    std::queue<std::string> cc2;
+    app.get()->write(vec);
+    /*ccc.push("CREATE");
+    ccc.push("TABLE");
+   // ccc.push("awd");
+    ccc.push("(");
+    ccc.push("CUSTOM_INT");
+    ccc.push("awd");
+    ccc.push(")");/*
+    app.get()->write(vec);
+    app.get()->write(ccc);
    // std::variant<int,double> var = 1.2;
   /*  while(true){
     size_t a = 0;
