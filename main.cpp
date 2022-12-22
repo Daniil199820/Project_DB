@@ -250,7 +250,7 @@ int main(){
     ptr = std::make_unique<B>();
 
     Parcer c;
-    auto vec =  c.process("CREATE TABLE name_table(CUSTOM_INT name_col_1, CUSTOM_DOUBLE name_col_2)");
+    auto vec =  c.process("CREATE TABLE name_table (CUSTOM_INT name_col_1, CUSTOM_DOUBLE name_col_2)");
     //while(!vec.empty()){
     //    std::cout<< vec.front()<<"\n";
     //    vec.pop();
@@ -258,11 +258,13 @@ int main(){
     
     auto app = std::make_unique<Application>();
     app.get()->set_current(IHandlerStatePtr{new NullState()});
-    std::queue<std::string> ccc;
-    std::queue<std::string> cc2;
     while(!vec.empty()){
-        app.get()->write(vec);
-        vec.pop();
+        //std::cout<<vec.front()<<"\n";
+        if(app.get()->write(vec) == "Error"){
+            break;
+        }
+        //std::cout<< vec.front();
+        //vec.pop();
     }
     
     /*ccc.push("CREATE");

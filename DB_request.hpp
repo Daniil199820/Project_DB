@@ -16,7 +16,7 @@ class Application;
 class IHandlerState{
 public:
     virtual std::string write(std::queue< std::string>& str_vec, Application* app) = 0;
-    //virtual ~IHandlerState() = 0;
+    virtual ~IHandlerState() {};
 };
 
 using IHandlerStatePtr = std::unique_ptr<IHandlerState>;
@@ -39,11 +39,8 @@ class Create_Process_Arg_State:public IHandlerState{
 public: 
     std::string write(std::queue<std::string>& str_vec, Application* app) override {
         std::vector< std::pair<int,std::string> > vec_pairs;
-        std::cout<<"we Create_Process_Arg_State\n";   
         while(true){
-            std::cout<< "flag_1\n"; 
             auto type_index = find_type(str_vec.front());
-            std::cout << "flag_2\n";
             if(type_index == -1){
 
                 break;
@@ -82,15 +79,14 @@ public:
     Create_Start_Arg_State(){std::cout<<"Create_Start_Arg_State\n";}
     ~Create_Start_Arg_State(){std::cout<<"Destr Create_Start_Arg_State\n";}
     std::string write(std::queue<std::string>& str_vec, Application* app) override {
-        std::cout<<"we Create_Start_Arg_State\n";
+        
         if(str_vec.front() == "("){
             str_vec.pop();
             app->set_current(IHandlerStatePtr{new Create_Process_Arg_State()});
-            std::cout<<" da\n";
             //app->write(str_vec);    
         }
         else{
-            return std::string{""};
+            return std::string{"Error - "};
             // write something
         }
     }
@@ -104,11 +100,11 @@ public:
         std::cout<<"we are in Create\n";
         if(str_vec.front() == "TABLE"){
             str_vec.pop();
+            
             app->set_current(IHandlerStatePtr{new Create_Start_Arg_State()});
-            //app->write(str_vec);
         }
         else{
-            return std::string{""};
+            return std::string{"Error - don't have TABLE"};
         }
     }
 };
@@ -181,7 +177,7 @@ public:
             app->set_current(IHandlerStatePtr{commands[st]});
             //app->write(str);
         }
-        return std::string{""};
+        return std::string{"No this command."};
     }
 
 private:

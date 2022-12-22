@@ -23,8 +23,10 @@ public:
                 }
             }
             else if(str[i] == '(' || str[i]== ')' || str[i]== ','){
-                result_array.emplace_back(temp_array);
-                result_array.emplace_back(std::string{str[i]});
+                if(!temp_array.empty()){
+                    result_array.emplace_back(temp_array);
+                }
+                //result_array.emplace_back(std::string{str[i]});
                 temp_array.clear();
             }
             else{
