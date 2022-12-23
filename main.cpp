@@ -246,7 +246,7 @@ B(){
 };
 
 int main(){
-    std::unique_ptr<A> ptr;
+ /*   std::unique_ptr<A> ptr;
     ptr = std::make_unique<B>();
 
     Parcer c;
