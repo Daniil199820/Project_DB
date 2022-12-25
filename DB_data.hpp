@@ -11,17 +11,6 @@
 #include <exception>
 #include <any>
 
-int to_integer(const std::string& arg){
-  int temp;
-  try{
-    temp = std::stoi(arg);
-  }
-  catch(const std::invalid_argument& inv_er){
-    throw std::invalid_argument("Argument is not an integer.");
-  }
-  return temp;
-}
-
 
 struct Column{
 private:
@@ -64,6 +53,28 @@ public:
         }
     }
 
+    std::vector<std::string> get_array(){
+        std::vector<std::string> result_array;
+        if(type_idx == CUSTOM_INT){
+            auto arr = std::get<std::vector<int> >(array);
+            for(int i = 0; i< arr.size(); ++i){
+                result_array.emplace_back(std::to_string(arr[i]));
+            }
+        }
+        if(type_idx == CUSTOM_DOUBLE){
+            auto arr = std::get<std::vector<double>>(array);
+            for(int i = 0; i< arr.size(); ++i){
+                result_array.emplace_back(std::to_string(arr[i]));
+            }
+        }
+        if(type_idx == CUSTOM_STRING){
+            auto arr = std::get<std::vector<std::string>>(array);
+            for(int i = 0; i< arr.size(); ++i){
+                result_array.emplace_back(arr[i]);
+            }
+        }
+        return result_array;
+    }
 
     void add_value(std::variant<int,double,std::string> value){
         if(type_idx == CUSTOM_INT){
@@ -103,9 +114,20 @@ public:
             throw std::logic_error("Table doesn't exist.");
         }
         auto current_table = tables[table_name];
-        for(auto& cur_col = current_table.begin(); cur_col != current_table.end(); ++ cur_col){
+        for(auto cur_col = current_table.begin(); cur_col != current_table.end(); ++ cur_col){
             cur_col->clear_values();
         }
+    }
+
+    std::vector<std::vector<std::string>> Show_Table_Data(const std::string& table_name){
+        if(!check_exist_table(table_name)){
+            throw std::logic_error("Table doesn't exist.");
+        }
+        std::vector<std::vector<std::string>> result_data;
+        for(auto current_col: tables[table_name]){
+            result_data.push_back(current_col.get_array());
+        }
+        return result_data;
     }
 
     void Delete_Column(std::string& table_name, std::string& column_name){
@@ -115,7 +137,7 @@ public:
 
         auto current_table = tables[table_name];
         bool logic_result = false;
-        for(auto& cur_col = current_table.begin();cur_col != current_table.end(); ++ cur_col){
+        for(auto cur_col = current_table.begin();cur_col != current_table.end(); ++ cur_col){
             if(cur_col->name_is_same(column_name)){
                 logic_result = true;
                 current_table.erase(cur_col);
@@ -126,13 +148,13 @@ public:
             throw std::logic_error("Column doesn't exist.");
         }
     }
-   // std::vector< std::variant<int,double,std::string> >value
+
     void Insert_Value(const std::string& table_name, std::vector<std::variant<int,double,std::string>> values){
         if(!check_exist_table(table_name)){
             throw std::logic_error("Table doesn't exist.");
         }
         if(values.size() != tables[table_name].size()){
-            throw std::logic_error("Table and values size shuold be equal.");
+            throw std::logic_error("Table and values size should be equal.");
         }
         auto current_table = tables[table_name];
         for(int i = 0; i < current_table.size();++i){
