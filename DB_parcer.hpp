@@ -28,15 +28,15 @@ std::string t1;
 std::string t2;
 
 void take(std::queue<std::string>& q_str){
-    t1 = q_str.front();
-    
+    auto it  = sets_command.find(t1 = q_str.front());
+    if(it == sets_command.end()){
+        throw std::logic_error("Commands doesn't found.");
+    }
     q_str.pop();
+    
     t2 = q_str.front();
 }
 };
-
-
-
 
 template<typename container = std::queue<std::string>>
 class Parcer{
