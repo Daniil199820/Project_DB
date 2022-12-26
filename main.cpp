@@ -201,71 +201,27 @@ public:
 };
 */
 
-
-
-
-
-template<typename T>
-void my_print(T val){
-    std::cout<<val<<"\n";
-}
-
-
-
-
-
-void parce(std::string& str){
-    
-    
-}
-
-template<typename T>
-void print(T d){
-    std::cout<<d;
-} 
-
-
-class A{
-public:
-A(){
-    std::cout<<"A\n";
-}
-virtual ~A(){
-    std::cout<<"dsr A\n";
-}
-};
-
-class B:public A{
-public:
-B(){
-    std::cout <<"B\n";
-}
-~B(){
-    std::cout << "dsr B\n";
-}
-};
-
 int main(){
- /*   std::unique_ptr<A> ptr;
-    ptr = std::make_unique<B>();
+ //   std::unique_ptr<A> ptr;
+ //   ptr = std::make_unique<B>();
 
     Parcer c;
-    auto vec =  c.process("CREATE TABLE name_table (CUSTOM_INT name_col_1, CUSTOM_DOUBLE name_col_2)");
-    //while(!vec.empty()){
-    //    std::cout<< vec.front()<<"\n";
-    //    vec.pop();
-   // }
-    
-    auto app = std::make_unique<Application>();
-    app.get()->set_current(IHandlerStatePtr{new NullState()});
+    auto vec =  c.process("CREATE TABLE table_name (CUSTOM_INT col_name_1, CUSTOM_STRING col_name_2)");
     while(!vec.empty()){
-        //std::cout<<vec.front()<<"\n";
-        if(app.get()->write(vec) == "Error"){
-            break;
-        }
+        std::cout<< vec.front()<<"\n";
+        vec.pop();
+    }
+    
+  //  auto app = std::make_unique<Application>();
+  //  app.get()->set_current(IHandlerStatePtr{new NullState()});
+  //  while(!vec.empty()){
+  //      //std::cout<<vec.front()<<"\n";
+  //      if(app.get()->write(vec) == "Error"){
+  //          break;
+  //      }
         //std::cout<< vec.front();
         //vec.pop();
-    }
+   // }
     
     /*ccc.push("CREATE");
     ccc.push("TABLE");
