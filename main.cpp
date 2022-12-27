@@ -216,11 +216,15 @@ struct C: public A{
 struct G{
   char* dd;
   int d;
-
-  
 };
 
 int main(){
+
+    N_Parcer np; 
+    np.parce("CREATE TABLE table_name (CUSTOM_INT col_name_1, CUSTOM_STRING col_name_2)");
+    for(const auto& [key,value]: tokens){
+        std::cout<< key<<"-"<<value<<"\n";
+    }
  //   std::unique_ptr<A> ptr;
  //   ptr = std::make_unique<B>();
     std::cout<< sizeof(G)<<"\n";

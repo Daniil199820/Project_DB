@@ -8,6 +8,14 @@
 #include <variant>
 #include <unordered_set>
 #include <unordered_map>
+#include <map>
+
+std::unordered_map<std::string,std::string, std::hash<std::string>> sets_command = {{"CREATE","Command"},{"TABLE","Command"},{"CUSTOM_INT","Type"},
+{"CUSTOM_DOUBLE", "Type"},{"CUSTOM_STRING", "Type"}};
+//std::unordered_map<std::string,std::string, std::hash<std::string>> sets_command = {{"CC","Cwe"},{"AWD","wad"}};
+std::unordered_map<std::string, std::string, std::hash<std::string>> tokens;
+
+
 struct Value_{
 std::variant<int, double, std::string> val;
 };
@@ -19,8 +27,6 @@ std::string t;
 struct Name_{
 std::string nm;
 };
-
-std::unordered_set<std::string, std::hash<std::string>> sets_command = {"CREATE","TABLE"};
 
 
 struct Command_{
@@ -90,4 +96,59 @@ private:
     
 };
 
+class N_Parcer{
+private:
+std::vector<std::string> unknown_leksems;
+void pull_leksema(std::string&& leks){
+    if(!leks.empty()){
+        unknown_leksems.emplace_back(std::forward<std::string> (leks));
+        leks.clear();
+    }
+}
+public:
+    void parce(const std::string& str){
+        std::string leksema; 
+        for(size_t i =0; i<str.size(); ++i){ 
+            switch (str[i]){
 
+            case '(':
+                tokens[std::string{str[i]}] = "ARG_START";
+                break;
+            case ')':
+                tokens[std::string{str[i]}] = "ARG_FINISH";
+                break;
+            case ',':
+                tokens[std::string{str[i]}] = "COMA";
+                break;   
+            case '\'':
+                tokens[std::string{str[i]}] = "STRING COMA";
+                break;
+            case ' ':
+                pull_leksema(std::move(leksema));
+                break;
+            case '\t':
+                pull_leksema(std::move(leksema));
+                break;
+            case '\n':
+                pull_leksema(std::move(leksema));
+                break;
+            default:
+                leksema += str[i];
+                break;
+            }
+        }
+        parce_unknown(std::move(unknown_leksems));
+    }
+
+    void parce_unknown(std::vector<std::string>&& vec_str){
+        for(const auto& str: vec_str){
+            auto it = sets_command.find(str);
+            if(it != sets_command.end()){
+                tokens[str] = sets_command[str];
+            }
+            else{
+                tokens[str] = "Value";
+            }
+        }
+    }
+};
