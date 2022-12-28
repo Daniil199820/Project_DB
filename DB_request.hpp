@@ -94,13 +94,10 @@ public:
 
 class Create_State:public IHandlerState{
 public:
-    Create_State(){std::cout<< "Create\n";}
-    ~Create_State(){std::cout<<"Destructor Create\n";}
     std::string write(std::queue<std::string>& str_vec, Application* app) override {
         std::cout<<"we are in Create\n";
         if(str_vec.front() == "TABLE"){
             str_vec.pop();
-            
             app->set_current(IHandlerStatePtr{new Create_Start_Arg_State()});
         }
         else{

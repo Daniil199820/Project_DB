@@ -10,11 +10,13 @@
 #include <unordered_map>
 #include <map>
 
+
+
+
 std::unordered_map<std::string,std::string, std::hash<std::string>> sets_command = {{"CREATE","Command"},{"TABLE","Command"},{"CUSTOM_INT","Type"},
 {"CUSTOM_DOUBLE", "Type"},{"CUSTOM_STRING", "Type"}};
-//std::unordered_map<std::string,std::string, std::hash<std::string>> sets_command = {{"CC","Cwe"},{"AWD","wad"}};
-std::unordered_map<std::string, std::string, std::hash<std::string>> tokens;
 
+std::unordered_map<std::string,std::string, std::hash<std::string>> tokens;
 
 struct Value_{
 std::variant<int, double, std::string> val;
@@ -112,16 +114,20 @@ public:
             switch (str[i]){
 
             case '(':
-                tokens[std::string{str[i]}] = "ARG_START";
+                tokens[std::string{str[i]}]= "ARG_START";
+                pull_leksema(std::move(leksema));
                 break;
             case ')':
-                tokens[std::string{str[i]}] = "ARG_FINISH";
+                tokens[std::string{str[i]}]="ARG_FINISH";
+                pull_leksema(std::move(leksema));
                 break;
             case ',':
-                tokens[std::string{str[i]}] = "COMA";
+                tokens[std::string{str[i]}]="COMA";
+                pull_leksema(std::move(leksema));
                 break;   
             case '\'':
-                tokens[std::string{str[i]}] = "STRING COMA";
+                tokens[std::string{str[i]}]="STRING COMA";
+                pull_leksema(std::move(leksema));
                 break;
             case ' ':
                 pull_leksema(std::move(leksema));

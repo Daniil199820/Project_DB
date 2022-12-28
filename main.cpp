@@ -222,32 +222,16 @@ int main(){
 
     N_Parcer np; 
     np.parce("CREATE TABLE table_name (CUSTOM_INT col_name_1, CUSTOM_STRING col_name_2)");
-    for(const auto& [key,value]: tokens){
-        std::cout<< key<<"-"<<value<<"\n";
-    }
- //   std::unique_ptr<A> ptr;
- //   ptr = std::make_unique<B>();
-    std::cout<< sizeof(G)<<"\n";
-    B* ptrB = new B();
 
-    A* ptrC = new C();
-
-    A* ptrA = dynamic_cast<A*>(ptrB); 
-
-    if(ptrA == nullptr){
-        std::cout<< "null\n";
-    }
-    else{
-        std::cout<<"not null\n";
-    }
-
+ 
     Parcer c;
     auto vec =  c.process("CREATE TABLE table_name (CUSTOM_INT col_name_1, CUSTOM_STRING col_name_2)");
     while(!vec.empty()){
-        std::cout<< vec.front()<<"\n";
+        std::cout<< vec.front()<< "-" <<tokens[vec.front()]<<"\n";
         vec.pop();
     }
     
+
   //  auto app = std::make_unique<Application>();
   //  app.get()->set_current(IHandlerStatePtr{new NullState()});
   //  while(!vec.empty()){
