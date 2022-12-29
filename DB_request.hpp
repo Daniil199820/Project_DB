@@ -92,6 +92,15 @@ public:
     }
 };
 
+class Create_Table:public IHandlerState{
+public:
+    
+    void set_table_name(const std::string& name_table){
+
+    }
+};
+
+
 class Create_State:public IHandlerState{
 public:
     std::string write(std::queue<std::string>& str_vec, Application* app) override {
@@ -105,6 +114,7 @@ public:
         }
     }
 };
+
 
 
 class Insert_State:public IHandlerState{
