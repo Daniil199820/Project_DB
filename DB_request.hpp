@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include <queue>
 #include "DB_details.hpp"
-
+#include "DB_parcer.hpp"
 class Application;
 
 class IHandlerState{
@@ -96,8 +96,16 @@ class Create_Table:public IHandlerState{
 public:
     
     void set_table_name(const std::string& name_table){
-
+        table_name = name_table;
     }
+
+    void set_column(const std::string& type, const std::string& value){
+        if(tokens[type] == "");
+    }
+
+private:
+    std::string table_name;
+    std::vector<std::make_pair<std::string,std::string>>
 };
 
 
