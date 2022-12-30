@@ -94,18 +94,43 @@ public:
 
 class Create_Table:public IHandlerState{
 public:
-    
-    void set_table_name(const std::string& name_table){
-        table_name = name_table;
-    }
+    std::string write(std::queue<std::string>& str_vec, Application* app) override {
 
-    void set_column(const std::string& type, const std::string& value){
-        if(tokens[type] == "");
+        set_table_name(str_vec.front());
+        str_vec.pop();
+        if(tokens[str_vec.front()] != "ARG_START"){
+            //error - no ARG_Start
+        }
+        str_vec.pop();
+        
+        while(tokens[str_vec.front()] == "ARG_FINISH"){
+            set_column_type(str_vec.front());
+            str_vec.pop();
+            set_column_name(str_vec.front());
+            str_vec.pop();
+        }
     }
 
 private:
     std::string table_name;
-    std::vector<std::make_pair<std::string,std::string>>
+    std::vector<std::pair<std::string,std::string>> values;
+    std::string column_type;
+    void set_table_name(const std::string& name_table){
+        table_name = name_table;
+    }
+
+    void set_column_type(const std::string& type){
+        if(tokens[type] == "Type"){
+            column_type = std::move(type);
+        }
+        else{
+            // error - unknown type 
+        }
+    }
+
+    void set_column_name(const std::string& value){
+        values.emplace_back(std::make_pair(column_type,value));
+    }
 };
 
 
