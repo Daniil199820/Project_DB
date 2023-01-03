@@ -220,6 +220,15 @@ struct G{
 
 int main(){
 
+    std::queue<std::string> awd;
+    std::cout << awd.front()<<"\n";
+    awd.push("er");
+    std::cout<< awd.size()<<"\n";
+    awd.pop();
+    std::cout<< awd.size()<<"\n";
+    awd.pop();
+    std::cout<< awd.size()<<"\n";
+
     N_Parcer np; 
     np.parce("CREATE TABLE table_name (CUSTOM_INT col_name_1, CUSTOM_STRING col_name_2)");
 

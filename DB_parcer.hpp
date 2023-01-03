@@ -56,13 +56,13 @@ public:
         std::vector<std::string> result_array;
         std::string temp_array;
         for(int i=0; i<str.size(); ++i){
-            if(str[i]=='\t' || str[i]==' ' || str[i]=='\n' ){
+            if(str[i]=='\t' || str[i]==' ' || str[i]=='\n' || str[i] == ','){
                 if(!temp_array.empty()){
                     result_array.emplace_back(temp_array);
                     temp_array.clear();
                 }
             }
-            else if(str[i] == '(' || str[i]== ')' || str[i]== ',' || str[i] == '\''){
+            else if(str[i] == '(' || str[i]== ')' || str[i] == '\''){
                 if(!temp_array.empty()){
                     result_array.emplace_back(temp_array);
                 }

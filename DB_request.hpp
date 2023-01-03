@@ -11,6 +11,7 @@
 #include <queue>
 #include "DB_details.hpp"
 #include "DB_parcer.hpp"
+#include "DB_data.hpp"
 class Application;
 
 class IHandlerState{
@@ -97,31 +98,60 @@ public:
     std::string write(std::queue<std::string>& str_vec, Application* app) override {
 
         set_table_name(str_vec.front());
-        str_vec.pop();
+        
+        if(str_vec.empty()){
+            str_vec.pop();
+        }
+        else{
+            return std::string{"Error - Should be table_name"};
+        }
+        
         if(tokens[str_vec.front()] != "ARG_START"){
             //error - no ARG_Start
         }
-        str_vec.pop();
+        if(str_vec.empty()){
+            str_vec.pop();
+        }
         
-        while(tokens[str_vec.front()] == "ARG_FINISH"){
+        while(tokens[str_vec.front()] == "ARG_FINISH" || !str_vec.empty()){
             set_column_type(str_vec.front());
             str_vec.pop();
             set_column_name(str_vec.front());
             str_vec.pop();
         }
+        
+        if(tokens[str_vec.front()] == "ARG_FINISH"){
+            database.Create_Table(table_name);
+            for(auto& value:values){
+                database.Add_Column(table_name,value);
+            }
+        }
+
+        else{
+            //Error - 
+        }
     }
 
 private:
     std::string table_name;
-    std::vector<std::pair<std::string,std::string>> values;
-    std::string column_type;
+    DB_data database;
+    std::vector<std::pair<int,std::string>> values;
+    int column_type;
     void set_table_name(const std::string& name_table){
         table_name = name_table;
     }
 
-    void set_column_type(const std::string& type){
+    void set_column_type( std::string& type){
         if(tokens[type] == "Type"){
-            column_type = std::move(type);
+            if(type == "CUSTOM_INT"){
+                column_type = 0;
+            }
+            if(type == "CUSTOM_DOUBLE"){
+                column_type = 1;
+            }
+            if(type == "CUSTOM_STRING"){
+                column_type = 2;
+            }
         }
         else{
             // error - unknown type 
@@ -139,11 +169,16 @@ public:
     std::string write(std::queue<std::string>& str_vec, Application* app) override {
         std::cout<<"we are in Create\n";
         if(str_vec.front() == "TABLE"){
-            str_vec.pop();
+            if(!str_vec.empty()){
+                str_vec.pop();
+            }
+            else{
+                return std::string{"Error - no created method."};
+            }
             app->set_current(IHandlerStatePtr{new Create_Start_Arg_State()});
         }
         else{
-            return std::string{"Error - don't have TABLE"};
+            return std::string{"Error - unknown CREATE method."};
         }
     }
 };

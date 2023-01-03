@@ -102,8 +102,8 @@ public:
         tables[name] = std::vector<Column>{};
     }
 
-    void Add_Column(const std::string& name,const std::string& table_name, std::pair<int,std::string>& pair){
-        if(!check_exist_table(name)){
+    void Add_Column(const std::string& table_name, std::pair<int,std::string>& pair){
+        if(!check_exist_table(table_name)){
             throw std::logic_error("Table doesn't exist.");
         }
         tables[table_name].emplace_back(pair.first, pair.second);
