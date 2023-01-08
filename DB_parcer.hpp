@@ -14,7 +14,7 @@
 
 
 std::unordered_map<std::string,std::string, std::hash<std::string>> sets_command = {{"CREATE","Command"},{"TABLE","Command"},{"CUSTOM_INT","Type"},
-{"CUSTOM_DOUBLE", "Type"},{"CUSTOM_STRING", "Type"}};
+{"CUSTOM_DOUBLE", "Type"},{"CUSTOM_STRING", "Type"}, {"DELETE", "Command"}, {"FROM", "Command"}};
 
 std::unordered_map<std::string,std::string, std::hash<std::string>> tokens;
 

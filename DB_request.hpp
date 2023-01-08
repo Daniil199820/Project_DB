@@ -18,6 +18,8 @@ class IHandlerState{
 public:
     virtual std::string write(std::queue< std::string>& str_vec, Application* app) = 0;
     virtual ~IHandlerState() {};
+protected:
+
 };
 
 using IHandlerStatePtr = std::unique_ptr<IHandlerState>;
@@ -36,70 +38,12 @@ private:
     IHandlerStatePtr m_handler;
 };
 
-class Create_Process_Arg_State:public IHandlerState{
-public: 
-    std::string write(std::queue<std::string>& str_vec, Application* app) override {
-        std::vector< std::pair<int,std::string> > vec_pairs;
-        while(true){
-            auto type_index = find_type(str_vec.front());
-            if(type_index == -1){
-
-                break;
-               // return {""};/*some error*/
-            }
-            else{
-                str_vec.pop();
-            }
- 
-            if(str_vec.front() == "," || str_vec.front() == ")"){
-                return {""};
-                //wait name after type definition
-            }
-            else{
-                vec_pairs.push_back(std::make_pair<int, std::string>(std::move(type_index),std::move(str_vec.front())));
-                str_vec.pop();
-            }
- 
-            if(str_vec.front() == ")"){
-                break;
-            }
- 
-            if(str_vec.front() == ","){
-                str_vec.pop();
-            }
-        
-        }
- 
-        return {""};
-    }
-};
-
-
-class Create_Start_Arg_State:public IHandlerState{
-public:
-    Create_Start_Arg_State(){std::cout<<"Create_Start_Arg_State\n";}
-    ~Create_Start_Arg_State(){std::cout<<"Destr Create_Start_Arg_State\n";}
-    std::string write(std::queue<std::string>& str_vec, Application* app) override {
-        
-        if(str_vec.front() == "("){
-            str_vec.pop();
-            app->set_current(IHandlerStatePtr{new Create_Process_Arg_State()});
-            //app->write(str_vec);    
-        }
-        else{
-            return std::string{"Error - "};
-            // write something
-        }
-    }
-};
 
 class Create_Table:public IHandlerState{
 public:
     std::string write(std::queue<std::string>& str_vec, Application* app) override {
 
-        set_table_name(str_vec.front());
-        
-        if(str_vec.empty()){
+        if(set_table_name(str_vec.front())){
             str_vec.pop();
         }
         else{
@@ -107,17 +51,24 @@ public:
         }
         
         if(tokens[str_vec.front()] != "ARG_START"){
-            //error - no ARG_Start
+            return std::string{"No start arguments - (."};
         }
-        if(str_vec.empty()){
-            str_vec.pop();
-        }
+        str_vec.pop();
         
         while(tokens[str_vec.front()] == "ARG_FINISH" || !str_vec.empty()){
-            set_column_type(str_vec.front());
-            str_vec.pop();
-            set_column_name(str_vec.front());
-            str_vec.pop();
+            if(set_column_type(str_vec.front())){
+                str_vec.pop();
+            }
+            else{
+                return std::string{"Unknow type."};
+            }
+
+            if(set_column_name(str_vec.front())){
+                str_vec.pop();
+            }
+            else{
+                return std::string{"No column name."};
+            }
         }
         
         if(tokens[str_vec.front()] == "ARG_FINISH"){
@@ -126,9 +77,8 @@ public:
                 database.Add_Column(table_name,value);
             }
         }
-
         else{
-            //Error - 
+            return std::string{"No end of arguments - )."}; 
         }
     }
 
@@ -137,11 +87,15 @@ private:
     DB_data database;
     std::vector<std::pair<int,std::string>> values;
     int column_type;
-    void set_table_name(const std::string& name_table){
-        table_name = name_table;
+    bool set_table_name(const std::string& name_table){
+        if(!name_table.empty()){
+            table_name = std::move(name_table);
+            return true;
+        }
+        return false;
     }
 
-    void set_column_type( std::string& type){
+    bool set_column_type( std::string& type){
         if(tokens[type] == "Type"){
             if(type == "CUSTOM_INT"){
                 column_type = 0;
@@ -152,13 +106,17 @@ private:
             if(type == "CUSTOM_STRING"){
                 column_type = 2;
             }
+            return true; 
         }
         else{
-            // error - unknown type 
+            return false; 
         }
     }
 
-    void set_column_name(const std::string& value){
+    bool set_column_name(const std::string& value){
+        if(value.empty()){
+            return false;
+        }
         values.emplace_back(std::make_pair(column_type,value));
     }
 };
@@ -212,9 +170,31 @@ class Delete_State:public IHandlerState{
 public:
     Delete_State(){std::cout<< "Delete\n";}
     std::string write(std::queue<std::string>& str_vec, Application* app) override{
-        // if we have this table 
-        //if(str_vec.front() )
+        if(str_vec.front()=="FROM"){
+            str_vec.pop();
+        }
+        else{
+            return std::string{"No <FROM> word."};
+        }
+        
+        if(set_table_name(str_vec.front())){
+            database.Drop_Table(str_vec.front());
+            str_vec.pop();
+        }
+        else{
+            return std::string{"No table_name."};
+        }
         return std::string{""};
+    }
+private:
+    std::string table_name;
+    DB_data database;
+    bool set_table_name(const std::string& name_table){
+        if(!name_table.empty()){
+            table_name = std::move(name_table);
+            return true;
+        }
+        return false;
     }
 };
 
