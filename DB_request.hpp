@@ -47,7 +47,7 @@ public:
             str_vec.pop();
         }
         else{
-            return std::string{"Error - Should be table_name"};
+            return std::string{"Error - Should be table name."};
         }
         
         if(tokens[str_vec.front()] != "ARG_START"){
@@ -127,44 +127,81 @@ public:
     std::string write(std::queue<std::string>& str_vec, Application* app) override {
         std::cout<<"we are in Create\n";
         if(str_vec.front() == "TABLE"){
-            if(!str_vec.empty()){
-                str_vec.pop();
-            }
-            else{
-                return std::string{"Error - no created method."};
-            }
-            app->set_current(IHandlerStatePtr{new Create_Start_Arg_State()});
+            str_vec.pop();
+            app->set_current(IHandlerStatePtr{new Create_Table()});
         }
         else{
-            return std::string{"Error - unknown CREATE method."};
+            return std::string{"Error - unknown <CREATE> method."};
         }
     }
 };
 
+class Insert_Table:public IHandlerState{
+public:
+    std::string write(std::queue<std::string>& str_vec, Application* app) override{
+        if(set_table_name(str_vec.front())){
+            str_vec.pop();
+        }
+        else{
+            return std::string{"Error - Should be table name."};
+        }
 
+        if(str_vec.front() == "VALUES"){
+            str_vec.pop();
+        }
+        else{
+            return std::string{""};
+        }
+
+        if(tokens[str_vec.front()] == "ARG_START"){
+            str_vec.pop();
+        }
+        else{
+            return std::string{"No start token - <(>."};
+        }
+
+        while(tokens[str_vec.front()] == "ARG_FINISH" || !str_vec.empty()){
+            // make special tokens with string ''
+        }
+        
+        if(tokens[str_vec.front()] == "ARG_FINISH"){
+            database.Create_Table(table_name);
+            for(auto& value:values){
+                database.Add_Column(table_name,value);
+            }
+        }
+        else{
+            return std::string{"No end of arguments - )."}; 
+        }
+
+    }
+private:
+    std::string table_name;
+    DB_data database;
+    std::vector<std::pair<int,std::string>> values;
+    bool set_table_name(const std::string& name_table){
+        if(!name_table.empty()){
+            table_name = std::move(name_table);
+            return true;
+        }
+        return false;
+    }
+};
 
 class Insert_State:public IHandlerState{
 public:
     Insert_State() {std::cout<< "Insert\n";}
     std::string write(std::queue<std::string>& str_vec, Application* app) override{
-        
         if(str_vec.front() == "INTO"){
-
+            str_vec.pop();
+            app->set_current(IHandlerStatePtr{new Insert_Table()});
         }
         else{
-            return std::string{""};
+            return std::string{"Error - unknown <INSERT> method."};
         }
     }
 };
 
-class Insert_State_Table:public IHandlerState{
-public:
-    std::string write(std::queue<std::string>& str_vec, Application* app) override{
-        // if we have this table 
-        //if(str_vec.front())
-        return std::string{""};
-    }
-};
 
 class Delete_State:public IHandlerState{
 public:
@@ -174,7 +211,7 @@ public:
             str_vec.pop();
         }
         else{
-            return std::string{"No <FROM> word."};
+            return std::string{"No <FROM> token."};
         }
         
         if(set_table_name(str_vec.front())){
