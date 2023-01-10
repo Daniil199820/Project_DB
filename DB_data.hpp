@@ -149,7 +149,7 @@ public:
         }
     }
 
-    void Insert_Value(const std::string& table_name, std::vector<std::variant<int,double,std::string>> values){
+    void Insert_Value(const std::string& table_name,std::vector<std::pair<std::string,std::string>> values){
         if(!check_exist_table(table_name)){
             throw std::logic_error("Table doesn't exist.");
         }
@@ -171,6 +171,10 @@ private:
             return true;
         }
         return false;
+    }
+
+    int check_exist_column(const std::string& column_name){
+        // Check existing table
     }
 
     std::unordered_map<std::string, table, std::hash<std::string> > tables; 

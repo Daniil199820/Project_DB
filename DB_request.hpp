@@ -161,7 +161,7 @@ public:
         }
 
         while(tokens[str_vec.front()] == "ARG_FINISH" || !str_vec.empty()){
-            // make special tokens with string ''
+            if()
         }
         
         if(tokens[str_vec.front()] == "ARG_FINISH"){
@@ -178,7 +178,7 @@ public:
 private:
     std::string table_name;
     DB_data database;
-    std::vector<std::pair<int,std::string>> values;
+    std::vector<std::pair<int, std::string>> values;
     bool set_table_name(const std::string& name_table){
         if(!name_table.empty()){
             table_name = std::move(name_table);

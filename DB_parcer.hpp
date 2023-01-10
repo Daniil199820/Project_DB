@@ -14,7 +14,8 @@
 
 
 std::unordered_map<std::string,std::string, std::hash<std::string>> sets_command = {{"CREATE","Command"},{"TABLE","Command"},{"CUSTOM_INT","Type"},
-{"CUSTOM_DOUBLE", "Type"},{"CUSTOM_STRING", "Type"}, {"DELETE", "Command"}, {"FROM", "Command"}, {"INSERT", "Command"}, {"INTO","Command"},{"VALUES","Command"}};
+{"CUSTOM_DOUBLE", "Type"},{"CUSTOM_STRING", "Type"}, {"DELETE", "Command"}, {"FROM", "Command"},
+ {"INSERT", "Command"}, {"INTO","Command"},{"VALUES","Command"}};
 
 std::unordered_map<std::string,std::string, std::hash<std::string>> tokens;
 
@@ -101,6 +102,7 @@ private:
 class N_Parcer{
 private:
 std::vector<std::string> unknown_leksems;
+bool string_value_flag = false;
 void pull_leksema(std::string&& leks){
     if(!leks.empty()){
         unknown_leksems.emplace_back(std::forward<std::string> (leks));
@@ -126,8 +128,14 @@ public:
                 pull_leksema(std::move(leksema));
                 break;   
             case '\'':
-                tokens[std::string{str[i]}]="STRING COMA";
-                pull_leksema(std::move(leksema));
+                if(string_value_flag){
+                    tokens[leksema] = "String_Value";
+                    leksema.clear();
+                    string_value_flag = false;
+                }
+                else{
+                    string_value_flag = true;
+                }
                 break;
             case ' ':
                 pull_leksema(std::move(leksema));
