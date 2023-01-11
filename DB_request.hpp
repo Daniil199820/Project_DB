@@ -136,7 +136,7 @@ public:
     }
 };
 
-class Insert_Table:public IHandlerState{
+class Insert_Into:public IHandlerState{
 public:
     std::string write(std::queue<std::string>& str_vec, Application* app) override{
         if(set_table_name(str_vec.front())){
@@ -161,24 +161,22 @@ public:
         }
 
         while(tokens[str_vec.front()] == "ARG_FINISH" || !str_vec.empty()){
-            if()
+            
         }
         
         if(tokens[str_vec.front()] == "ARG_FINISH"){
-            database.Create_Table(table_name);
-            for(auto& value:values){
-                database.Add_Column(table_name,value);
-            }
+            database.Insert_Value(table_name, values);
         }
         else{
             return std::string{"No end of arguments - )."}; 
         }
 
     }
+
 private:
     std::string table_name;
     DB_data database;
-    std::vector<std::pair<int, std::string>> values;
+    std::vector<std::string> values;
     bool set_table_name(const std::string& name_table){
         if(!name_table.empty()){
             table_name = std::move(name_table);
@@ -194,7 +192,7 @@ public:
     std::string write(std::queue<std::string>& str_vec, Application* app) override{
         if(str_vec.front() == "INTO"){
             str_vec.pop();
-            app->set_current(IHandlerStatePtr{new Insert_Table()});
+            app->set_current(IHandlerStatePtr{new Insert_Into()});
         }
         else{
             return std::string{"Error - unknown <INSERT> method."};

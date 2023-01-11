@@ -76,17 +76,31 @@ public:
         return result_array;
     }
 
-    void add_value(std::variant<int,double,std::string> value){
+    void add_value(const std::string& value){
         if(type_idx == CUSTOM_INT){
-            std::get<std::vector<int>>(array).push_back(std::get<int>(value));
+            int int_value = 0;
+            try{
+                int_value = atoi(value.c_str());
+                std::get<std::vector<int>>(array).push_back(int_value);    
+            }
+            catch(...){
+                throw std::invalid_argument("Error couldn't " + value + "to CUSTOM_INT");
+            }
         }
 
         if(type_idx == CUSTOM_DOUBLE){
-            std::get<std::vector<double>>(array).push_back(std::get<double>(value));
+            double double_value = 0.0;
+            try{
+                double_value = atof(value.c_str());
+                std::get<std::vector<double>>(array).push_back(double_value);
+            }
+            catch(...){
+                throw std::invalid_argument("Error couldn't " + value + "to CUSTOM_DOUBLE");
+            }
         }
 
         if(type_idx == CUSTOM_STRING){
-            std::get<std::vector<std::string>>(array).push_back(std::get<std::string>(value));
+            std::get<std::vector<std::string>>(array).push_back(value);
         }
         
     }
@@ -149,7 +163,7 @@ public:
         }
     }
 
-    void Insert_Value(const std::string& table_name,std::vector<std::pair<std::string,std::string>> values){
+    void Insert_Value(const std::string& table_name,std::vector<std::string>& values){
         if(!check_exist_table(table_name)){
             throw std::logic_error("Table doesn't exist.");
         }

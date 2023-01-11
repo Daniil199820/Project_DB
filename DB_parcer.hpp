@@ -112,7 +112,12 @@ void pull_leksema(std::string&& leks){
 public:
     void parce(const std::string& str){
         std::string leksema; 
-        for(size_t i =0; i<str.size(); ++i){ 
+        for(size_t i =0; i<str.size(); ++i){
+
+            if(string_value_flag){
+                
+            }
+
             switch (str[i]){
 
             case '(':
