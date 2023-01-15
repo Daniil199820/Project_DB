@@ -15,6 +15,8 @@ int to_integer(const std::string& arg){
   return temp;
 }
 
+using TOKENS_TYPE = std::unordered_map<std::string,std::string, std::hash<std::string>>;
+
 int find_type(const std::string& str_type){
     if(str_type == "CUSTOM_INT"){
         return CUSTOM_INT;

@@ -188,9 +188,5 @@ private:
         return false;
     }
 
-    int check_exist_column(const std::string& column_name){
-        // Check existing table
-    }
-
     std::unordered_map<std::string, table, std::hash<std::string> > tables; 
 };

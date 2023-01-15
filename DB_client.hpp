@@ -6,37 +6,24 @@
 #include <condition_variable>
 #include <queue>
 #include <functional>
-#include "DB_request.h"
+#include "DB_controller.hpp"
 #include <chrono>
-#include "Ditchr_Data.h"
-#include<memory>
+#include <memory>
 #include "thread_pool.hpp"
 
 class DB_client{
 public:
 
     DB_client(){
-        data_store = std::make_shared<Data_storage>();
-        req_mngr = std::make_unique <Request_manager>(data_store);
-    }
-
-    std::shared_ptr<Data_storage> get_Data_Storage_ptr(){
-        return data_store;
-    }
-
-    std::shared_ptr<Request_manager> get_Request_ptr(){
-        return req_mngr;
+        DB_ctrl = std::make_unique<DB_controller>();
     }
 
     void make_request(const std::string& command_str){
-        pool_thread_DB.submit([&](){
-            req_mngr->set_request(temp_command);
-        })
+        pool_thread_DB.submit([&]() {
+            DB_ctrl.get()->process(command_str);
+        });
     }
-
-
 private:
-    std::shared_ptr<Request_manager>req_mngr;
-    std::shared_ptr<Data_storage> data_store;
+    std::unique_ptr<DB_controller> DB_ctrl;
     tp::Thread_pool pool_thread_DB;
 };

@@ -9,46 +9,15 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <map>
-
-
-
+#include "DB_details.hpp"
 
 std::unordered_map<std::string,std::string, std::hash<std::string>> sets_command = {{"CREATE","Command"},{"TABLE","Command"},{"CUSTOM_INT","Type"},
 {"CUSTOM_DOUBLE", "Type"},{"CUSTOM_STRING", "Type"}, {"DELETE", "Command"}, {"FROM", "Command"},
  {"INSERT", "Command"}, {"INTO","Command"},{"VALUES","Command"}, {"SELECT", "Command"}, {"*", "Command"}};
 
-std::unordered_map<std::string,std::string, std::hash<std::string>> tokens;
+using container = std::queue<std::string>;
 
-struct Value_{
-std::variant<int, double, std::string> val;
-};
-
-struct Type_{
-std::string t;
-};
-
-struct Name_{
-std::string nm;
-};
-
-
-struct Command_{
-std::string t1;
-std::string t2;
-
-void take(std::queue<std::string>& q_str){
-    auto it  = sets_command.find(t1 = q_str.front());
-    if(it == sets_command.end()){
-        throw std::logic_error("Commands doesn't found.");
-    }
-    q_str.pop();
-    
-    t2 = q_str.front();
-}
-};
-
-template<typename container = std::queue<std::string>>
-class Parcer{
+class Splitter{
 public:
     container process(const std::string& str){
         if(str.empty()){
@@ -88,7 +57,7 @@ public:
         for(int i = 0; i< result_array.size(); ++i){
             push_element(return_container,result_array[i]);
         }
-
+        string_value_flag = false;
         return return_container;
     }
 
@@ -108,9 +77,10 @@ private:
     
 };
 
-class N_Parcer{
+class Parcer{
 private:
 std::vector<std::string> unknown_leksems;
+TOKENS_TYPE tokens;
 bool string_value_flag = false;
 void pull_leksema(std::string&& leks){
     if(!leks.empty()){
@@ -119,7 +89,9 @@ void pull_leksema(std::string&& leks){
     }
 }
 public:
-    void parce(const std::string& str){
+
+    TOKENS_TYPE parce(const std::string& str){
+        tokens.clear();
         std::string leksema; 
         for(size_t i =0; i<str.size(); ++i){
 
@@ -168,6 +140,8 @@ public:
             }
         }
         parce_unknown(std::move(unknown_leksems));
+        string_value_flag = false;
+        return tokens;
     }
 
     void parce_unknown(std::vector<std::string>&& vec_str){
