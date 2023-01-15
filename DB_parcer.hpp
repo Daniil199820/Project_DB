@@ -15,7 +15,7 @@
 
 std::unordered_map<std::string,std::string, std::hash<std::string>> sets_command = {{"CREATE","Command"},{"TABLE","Command"},{"CUSTOM_INT","Type"},
 {"CUSTOM_DOUBLE", "Type"},{"CUSTOM_STRING", "Type"}, {"DELETE", "Command"}, {"FROM", "Command"},
- {"INSERT", "Command"}, {"INTO","Command"},{"VALUES","Command"}};
+ {"INSERT", "Command"}, {"INTO","Command"},{"VALUES","Command"}, {"SELECT", "Command"}, {"*", "Command"}};
 
 std::unordered_map<std::string,std::string, std::hash<std::string>> tokens;
 
@@ -57,18 +57,26 @@ public:
         std::vector<std::string> result_array;
         std::string temp_array;
         for(int i=0; i<str.size(); ++i){
-            if(str[i]=='\t' || str[i]==' ' || str[i]=='\n' || str[i] == ','){
+            if((str[i]=='\t' || str[i]==' ' || str[i]=='\n' || str[i] == ',') && !string_value_flag){
                 if(!temp_array.empty()){
                     result_array.emplace_back(temp_array);
                     temp_array.clear();
                 }
             }
-            else if(str[i] == '(' || str[i]== ')' || str[i] == '\''){
+            else if( (str[i] == '(' || str[i]== ')') && !string_value_flag ){
                 if(!temp_array.empty()){
                     result_array.emplace_back(temp_array);
                 }
                 result_array.emplace_back(std::string{str[i]});
                 temp_array.clear();
+            }
+            else if(str[i]== '\''){
+                if(string_value_flag){
+                    string_value_flag = false;
+                }
+                else{
+                    string_value_flag = true;
+                }
             }
             else{
                 temp_array += str[i];
@@ -85,6 +93,7 @@ public:
     }
 
 private:
+    bool string_value_flag = false;
     template<typename T>
     decltype(std::declval<T>().push(std::string{""}),void())
     push_element(T& cont, std::string& str){
@@ -114,46 +123,48 @@ public:
         std::string leksema; 
         for(size_t i =0; i<str.size(); ++i){
 
-            if(string_value_flag){
-                
-            }
-
-            switch (str[i]){
-
-            case '(':
-                tokens[std::string{str[i]}]= "ARG_START";
-                pull_leksema(std::move(leksema));
-                break;
-            case ')':
-                tokens[std::string{str[i]}]="ARG_FINISH";
-                pull_leksema(std::move(leksema));
-                break;
-            case ',':
-                tokens[std::string{str[i]}]="COMA";
-                pull_leksema(std::move(leksema));
-                break;   
-            case '\'':
-                if(string_value_flag){
-                    tokens[leksema] = "String_Value";
-                    leksema.clear();
-                    string_value_flag = false;
-                }
-                else{
-                    string_value_flag = true;
-                }
-                break;
-            case ' ':
-                pull_leksema(std::move(leksema));
-                break;
-            case '\t':
-                pull_leksema(std::move(leksema));
-                break;
-            case '\n':
-                pull_leksema(std::move(leksema));
-                break;
-            default:
+            if(string_value_flag && !(str[i] == '\'')){
                 leksema += str[i];
-                break;
+            }
+            else{
+
+                switch (str[i]){
+
+                case '(':
+                    tokens[std::string{str[i]}]= "ARG_START";
+                    pull_leksema(std::move(leksema));
+                    break;
+                case ')':
+                    tokens[std::string{str[i]}]="ARG_FINISH";
+                    pull_leksema(std::move(leksema));
+                    break;
+                case ',':
+                    tokens[std::string{str[i]}]="COMA";
+                    pull_leksema(std::move(leksema));
+                    break;   
+                case '\'':
+                    if(string_value_flag){
+                        tokens[leksema] = "String_Value";
+                        leksema.clear();
+                        string_value_flag = false;
+                    }
+                    else{
+                        string_value_flag = true;
+                    }
+                    break;
+                case ' ':
+                    pull_leksema(std::move(leksema));
+                    break;
+                case '\t':
+                    pull_leksema(std::move(leksema));
+                    break;
+                case '\n':
+                    pull_leksema(std::move(leksema));
+                    break;
+                default:
+                    leksema += str[i];
+                    break;
+                }
             }
         }
         parce_unknown(std::move(unknown_leksems));

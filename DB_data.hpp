@@ -55,8 +55,9 @@ public:
 
     std::vector<std::string> get_array(){
         std::vector<std::string> result_array;
+        result_array.emplace_back(name_column);
         if(type_idx == CUSTOM_INT){
-            auto arr = std::get<std::vector<int> >(array);
+            auto arr = std::get<std::vector<int>>(array);
             for(int i = 0; i< arr.size(); ++i){
                 result_array.emplace_back(std::to_string(arr[i]));
             }

@@ -161,14 +161,15 @@ public:
         }
 
         while(tokens[str_vec.front()] == "ARG_FINISH" || !str_vec.empty()){
-            
+            values.emplace_back(str_vec.front());
+            str_vec.pop();
         }
         
         if(tokens[str_vec.front()] == "ARG_FINISH"){
             database.Insert_Value(table_name, values);
         }
         else{
-            return std::string{"No end of arguments - )."}; 
+            return std::string{"No end of arguments - <)>."}; 
         }
 
     }
@@ -237,9 +238,44 @@ class Select_State:public IHandlerState{
 public:
     Select_State(){std::cout<< "Select\n";}
     std::string write(std::queue<std::string>& str_vec, Application* app) override{
-        // if we have this table 
-        //if(str_vec.front() )
-        return std::string{""};
+        if(str_vec.front() == "FROM"){
+            str_vec.pop();
+        }
+        else{
+            return std::string{"No <FROM> token."};
+        }
+        if(str_vec.front() == "*"){
+            str_vec.pop();
+        }
+        else{
+            return std::string{"No <*> token."};
+        }
+        if(!str_vec.empty()){
+            set_table_name(str_vec.front());
+        }
+        else{
+            return std::string{"No argument in requirement."};
+        }
+        try{
+            auto result = database.Show_Table_Data(table_name);
+            std::string string_result;
+            for(int j=0;j<result.front().size(); ++j){
+                for(int i =0; i<result.size();++i){
+                    string_result.append(result[i][j]);
+                    string_result.append(" ");
+                }
+                string_result.append("\n");
+            }
+        }
+        catch(std::exception& ex){
+            return std::string{ex.what()};
+        }
+    }
+private:
+    DB_data database;
+    std::string table_name;
+    void set_table_name(const std::string& name_table){
+        table_name = name_table;;
     }
 };
 
