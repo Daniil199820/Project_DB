@@ -17,29 +17,33 @@ class Application;
 
 class IHandlerState{
 public:
-    virtual std::string write(std::queue< std::string>&& str_vec,std::shared_ptr<DB_data>,TOKENS_TYPE& tokens, Application* app) = 0;
+    virtual std::string write(std::queue< std::string>& str_vec,std::shared_ptr<DB_data>,TOKENS_TYPE& tokens, Application* app) = 0;
     virtual ~IHandlerState() {};
 };
 
 using IHandlerStatePtr = std::unique_ptr<IHandlerState>;
+
 
 class Application{
 public:
 
     Application() = delete;
 
-    Application(std::shared_ptr<DB_data> databace):databace(databace){}
+    Application(std::shared_ptr<DB_data> databace);
     
     void set_current(IHandlerStatePtr hPtr){
         m_handler = std::move(hPtr);
     }
 
+    void set_null();
+
     void set_tokens(TOKENS_TYPE&& n_tokens){
         tokens = std::move(n_tokens);
     }
 
-    std::string write(std::queue<std::string>&& str){
-        return m_handler->write(std::move(str),databace,tokens, this);
+    std::string write(std::queue<std::string>& str){
+        auto res = m_handler->write(str,databace,tokens, this); 
+        return res;
     }
 
 private:
@@ -51,9 +55,8 @@ private:
 
 class Create_Table:public IHandlerState{
 public:
-    std::string write(std::queue<std::string>&& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override {
-
-        if(set_table_name(str_vec.front())){
+    std::string write(std::queue<std::string>& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override {
+        if(set_table_name(str_vec.front()) && tokens[str_vec.front()]=="Value" ){
             str_vec.pop();
         }
         else{
@@ -65,7 +68,7 @@ public:
         }
         str_vec.pop();
         
-        while(tokens[str_vec.front()] == "ARG_FINISH" || !str_vec.empty()){
+        while(tokens[str_vec.front()] != "ARG_FINISH" && !str_vec.empty()){
 
             if(tokens[str_vec.front()]=="Type"){
                 set_column_type(str_vec.front());
@@ -85,11 +88,24 @@ public:
         
         if(tokens[str_vec.front()] == "ARG_FINISH"){
             mutex_db.lock();
-            databace.get()->Create_Table(table_name);
+            try{
+                databace.get()->Create_Table(table_name);
+            }
+            catch(std::exception& ex){
+                mutex_db.unlock();
+                return std::string{ex.what()};
+            }
             mutex_db.unlock();
+
             for(auto& value:values){
                 mutex_db.lock();
-                databace.get()->Add_Column(table_name,value);
+                try{
+                    databace.get()->Add_Column(table_name,value);
+                }
+                catch(std::exception& ex){
+                    mutex_db.unlock();
+                    return std::string{ex.what()};
+                }
                 mutex_db.unlock();
             }
         }
@@ -106,7 +122,7 @@ private:
     std::vector<std::pair<int,std::string>> values;
     int column_type;
     bool set_table_name(const std::string& name_table){
-        if(!name_table.empty()){
+        if(!name_table.empty() ){
             table_name = std::move(name_table);
             return true;
         }
@@ -136,22 +152,22 @@ private:
 
 class Create_State:public IHandlerState{
 public:
-    std::string write(std::queue<std::string>&& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override {
-        std::cout<<"we are in Create\n";
+    std::string write(std::queue<std::string>& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override {
         if(str_vec.front() == "TABLE"){
             str_vec.pop();
             app->set_current(IHandlerStatePtr{new Create_Table()});
-            app->write(std::move(str_vec));
+            std::string dd;
         }
         else{
             return std::string{"Error - unknown <CREATE> method."};
         }
+        return app->write(str_vec);
     }
 };
 
 class Insert_Into:public IHandlerState{
 public:
-    std::string write(std::queue<std::string>&& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override{
+    std::string write(std::queue<std::string>& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override{
         if(set_table_name(str_vec.front())){
             str_vec.pop();
         }
@@ -173,15 +189,20 @@ public:
             return std::string{"No start token - <(>."};
         }
 
-        while(tokens[str_vec.front()] == "ARG_FINISH" || !str_vec.empty()){
+        while(tokens[str_vec.front()] != "ARG_FINISH" && !str_vec.empty()){
             values.emplace_back(str_vec.front());
             str_vec.pop();
         }
         
         if(tokens[str_vec.front()] == "ARG_FINISH"){
-            mutex_db.lock();
-            databace.get()->Insert_Value(table_name, values);
-            mutex_db.unlock();
+
+            std::unique_lock<std::mutex> lock;
+            try{
+                databace.get()->Insert_Value(table_name, values);
+            }
+            catch(std::exception& ex){
+                return std::string{ex.what()};
+            }
         }
         else{
             return std::string{"No end of arguments - <)>."}; 
@@ -204,22 +225,22 @@ private:
 
 class Insert_State:public IHandlerState{
 public:
-    std::string write(std::queue<std::string>&& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override{
+    std::string write(std::queue<std::string>& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override{
         if(str_vec.front() == "INTO"){
             str_vec.pop();
             app->set_current(IHandlerStatePtr{new Insert_Into()});
-            app->write(std::move(str_vec));
         }
         else{
             return std::string{"Error - unknown <INSERT> method."};
         }
+        return app->write(str_vec);
     }
 };
 
 
 class Delete_State:public IHandlerState{
 public:
-    std::string write(std::queue<std::string>&& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override{
+    std::string write(std::queue<std::string>& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override{
         if(str_vec.front()=="FROM"){
             str_vec.pop();
         }
@@ -228,9 +249,13 @@ public:
         }
         
         if(set_table_name(str_vec.front())){
-            mutex_db.lock();
-            databace.get()->Drop_Table(str_vec.front());
-            mutex_db.unlock();
+            std::unique_lock<std::mutex> locker;
+            try{
+                databace.get()->Drop_Table(str_vec.front());
+            }
+            catch(std::exception& ex){
+                return std::string{ex.what()};
+            }
             str_vec.pop();
         }
         else{
@@ -252,8 +277,7 @@ private:
 
 class Select_State:public IHandlerState{
 public:
-    Select_State(){std::cout<< "Select\n";}
-    std::string write(std::queue<std::string>&& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override{
+    std::string write(std::queue<std::string>& str_vec,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override{
         if(str_vec.front() == "FROM"){
             str_vec.pop();
         }
@@ -300,19 +324,18 @@ private:
 
 class NullState:public IHandlerState{
 public:
-    std::string write(std::queue<std::string>&& str,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override{
+    std::string write(std::queue<std::string>& str,std::shared_ptr<DB_data> databace,TOKENS_TYPE& tokens, Application* app) override{
         auto it =  commands.find(str.front());
         if(it != commands.end())
         {
             auto st = str.front();
             str.pop();
             app->set_current(IHandlerStatePtr{commands[st]});
-            app->write(std::move(str));
         }
         else{
             return std::string{"No command."};
         }
-        return std::string{""};
+        return app->write(str);
     }
 
 private:
@@ -321,5 +344,10 @@ private:
       {"SELECT",new Select_State()},{"DELETE",new Delete_State()}};
 };
 
+Application::Application(std::shared_ptr<DB_data> databace):databace(databace){
+    set_null();
+}
 
-
+void Application::set_null(){
+    set_current(IHandlerStatePtr{new NullState()});
+}

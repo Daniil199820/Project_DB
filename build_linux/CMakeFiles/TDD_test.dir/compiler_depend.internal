@@ -339,4 +339,19 @@ CMakeFiles/TDD_test.dir/tests/tests.cpp.o
  /home/daniil/cpp/Project_DB/GTEST_LINUX/googletest/include/gtest/gtest-typed-test.h
  /home/daniil/cpp/Project_DB/GTEST_LINUX/googletest/include/gtest/gtest_pred_impl.h
  /home/daniil/cpp/Project_DB/GTEST_LINUX/googletest/include/gtest/gtest_prod.h
+ /home/daniil/cpp/Project_DB/DB_controller.hpp
+ /home/daniil/cpp/Project_DB/DB_data.hpp
+ /usr/include/c++/11/list
+ /usr/include/c++/11/bits/stl_list.h
+ /usr/include/c++/11/bits/list.tcc
+ /home/daniil/cpp/Project_DB/DB_details.hpp
+ /home/daniil/cpp/Project_DB/DB_parcer.hpp
+ /usr/include/c++/11/queue
+ /usr/include/c++/11/deque
+ /usr/include/c++/11/bits/stl_deque.h
+ /usr/include/c++/11/bits/deque.tcc
+ /usr/include/c++/11/bits/stl_queue.h
+ /usr/include/c++/11/unordered_set
+ /usr/include/c++/11/bits/unordered_set.h
+ /home/daniil/cpp/Project_DB/DB_request.hpp
 

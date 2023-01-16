@@ -12,9 +12,12 @@ public:
         parcer = std::make_unique<Parcer>();
         splitter = std::make_unique<Splitter>();
     }
-    std::string process(const std::string& request){
+    std::string process(std::string request){
         app.get()->set_tokens(std::move(parcer.get()->parce(request)));
-        return app.get()->write(std::move(splitter.get()->process(request)));
+        auto result_splitter = splitter.get()->process(request);
+        app.get()->set_null();
+        auto res = app.get()->write(result_splitter);
+        return res;
     }
 private:
     std::shared_ptr<DB_data> database;

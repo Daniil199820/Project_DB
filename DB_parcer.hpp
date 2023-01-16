@@ -49,7 +49,11 @@ public:
             }
             else{
                 temp_array += str[i];
-            
+                if(i == str.size()-1){
+                    if(!temp_array.empty()){
+                        result_array.emplace_back(temp_array);
+                    }
+                }
             }
         }
 
@@ -135,6 +139,9 @@ public:
                     break;
                 default:
                     leksema += str[i];
+                    if(i==str.size()-1){
+                        pull_leksema(std::move(leksema));
+                    }
                     break;
                 }
             }
