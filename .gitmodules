@@ -1,3 +1,6 @@
 [submodule "GTEST_LINUX"]
 	path = GTEST_LINUX
 	url = https://github.com/google/googletest
+[submodule "GTEST_WINDOWS"]
+	path = GTEST_WINDOWS
+	url = https://github.com/google/googletest

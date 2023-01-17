@@ -1,3 +1,11 @@
+D:/Project_DB/build_windows/CMakeFiles/TDD_test.dir
 D:/Project_DB/build_windows/CMakeFiles/main.dir
 D:/Project_DB/build_windows/CMakeFiles/ALL_BUILD.dir
 D:/Project_DB/build_windows/CMakeFiles/ZERO_CHECK.dir
+D:/Project_DB/build_windows/googletest/CMakeFiles/ALL_BUILD.dir
+D:/Project_DB/build_windows/googletest/googlemock/CMakeFiles/gmock_main.dir
+D:/Project_DB/build_windows/googletest/googlemock/CMakeFiles/gmock.dir
+D:/Project_DB/build_windows/googletest/googlemock/CMakeFiles/ALL_BUILD.dir
+D:/Project_DB/build_windows/googletest/googletest/CMakeFiles/gtest.dir
+D:/Project_DB/build_windows/googletest/googletest/CMakeFiles/gtest_main.dir
+D:/Project_DB/build_windows/googletest/googletest/CMakeFiles/ALL_BUILD.dir
