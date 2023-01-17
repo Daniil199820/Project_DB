@@ -12,7 +12,7 @@ public:
         parcer = std::make_unique<Parcer>();
         splitter = std::make_unique<Splitter>();
     }
-    std::string process(std::string request){
+    std::string process(std::string request) noexcept{
         app.get()->set_tokens(std::move(parcer.get()->parce(request)));
         auto result_splitter = splitter.get()->process(request);
         app.get()->set_null();

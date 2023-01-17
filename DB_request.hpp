@@ -186,7 +186,7 @@ public:
             str_vec.pop();
         }
         else{
-            return std::string{"No start token - <(>."};
+            return std::string{"No argument start token - <(>."};
         }
 
         while(tokens[str_vec.front()] != "ARG_FINISH" && !str_vec.empty()){
