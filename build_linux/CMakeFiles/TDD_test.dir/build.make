@@ -94,6 +94,7 @@ TDD_test: CMakeFiles/TDD_test.dir/tests/tests.cpp.o
 TDD_test: CMakeFiles/TDD_test.dir/build.make
 TDD_test: lib/libgtest.a
 TDD_test: lib/libgtest_main.a
+TDD_test: libDB_control.so
 TDD_test: lib/libgtest.a
 TDD_test: CMakeFiles/TDD_test.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/daniil/cpp/Project_DB/build_linux/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable TDD_test"

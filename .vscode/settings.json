@@ -79,6 +79,8 @@
         "thread": "cpp",
         "cinttypes": "cpp",
         "typeindex": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "forward_list": "cpp",
+        "fstream": "cpp"
     }
 }

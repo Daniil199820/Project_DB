@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/g++
 CXX_DEFINES = 
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -I/home/daniil/cpp/Project_DB
 
 CXX_FLAGS = -g -std=gnu++17
 

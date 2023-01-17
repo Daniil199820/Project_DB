@@ -92,6 +92,7 @@ main_EXTERNAL_OBJECTS =
 
 main: CMakeFiles/main.dir/main.cpp.o
 main: CMakeFiles/main.dir/build.make
+main: libDB_control.so
 main: CMakeFiles/main.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/daniil/cpp/Project_DB/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable main"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=$(VERBOSE)

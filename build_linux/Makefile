@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /home/daniil/cpp/Project_DB/build_linux
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -128,6 +138,19 @@ main: cmake_check_build_system
 main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
+
+#=============================================================================
+# Target rules for targets named DB_control
+
+# Build rule for target.
+DB_control: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 DB_control
+.PHONY : DB_control
+
+# fast build rule for target.
+DB_control/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DB_control.dir/build.make CMakeFiles/DB_control.dir/build
+.PHONY : DB_control/fast
 
 #=============================================================================
 # Target rules for targets named TDD_test
@@ -194,6 +217,30 @@ gtest_main/fast:
 	$(MAKE) $(MAKESILENT) -f googletest/googletest/CMakeFiles/gtest_main.dir/build.make googletest/googletest/CMakeFiles/gtest_main.dir/build
 .PHONY : gtest_main/fast
 
+DB_controller.o: DB_controller.cpp.o
+.PHONY : DB_controller.o
+
+# target to build an object file
+DB_controller.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DB_control.dir/build.make CMakeFiles/DB_control.dir/DB_controller.cpp.o
+.PHONY : DB_controller.cpp.o
+
+DB_controller.i: DB_controller.cpp.i
+.PHONY : DB_controller.i
+
+# target to preprocess a source file
+DB_controller.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DB_control.dir/build.make CMakeFiles/DB_control.dir/DB_controller.cpp.i
+.PHONY : DB_controller.cpp.i
+
+DB_controller.s: DB_controller.cpp.s
+.PHONY : DB_controller.s
+
+# target to generate assembly for a file
+DB_controller.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DB_control.dir/build.make CMakeFiles/DB_control.dir/DB_controller.cpp.s
+.PHONY : DB_controller.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -250,12 +297,17 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... test"
+	@echo "... DB_control"
 	@echo "... TDD_test"
 	@echo "... gmock"
 	@echo "... gmock_main"
 	@echo "... gtest"
 	@echo "... gtest_main"
 	@echo "... main"
+	@echo "... DB_controller.o"
+	@echo "... DB_controller.i"
+	@echo "... DB_controller.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

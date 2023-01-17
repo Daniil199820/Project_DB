@@ -338,12 +338,6 @@ CMakeFiles/TDD_test.dir/tests/tests.cpp.o: ../tests/tests.cpp \
   ../GTEST_LINUX/googletest/include/gtest/gtest-typed-test.h \
   ../GTEST_LINUX/googletest/include/gtest/gtest_pred_impl.h \
   ../GTEST_LINUX/googletest/include/gtest/gtest_prod.h \
-  ../DB_controller.hpp \
-  ../DB_data.hpp \
-  /usr/include/c++/11/list \
-  /usr/include/c++/11/bits/stl_list.h \
-  /usr/include/c++/11/bits/list.tcc \
-  ../DB_details.hpp \
   ../DB_parcer.hpp \
   /usr/include/c++/11/queue \
   /usr/include/c++/11/deque \
@@ -352,20 +346,33 @@ CMakeFiles/TDD_test.dir/tests/tests.cpp.o: ../tests/tests.cpp \
   /usr/include/c++/11/bits/stl_queue.h \
   /usr/include/c++/11/unordered_set \
   /usr/include/c++/11/bits/unordered_set.h \
-  ../DB_request.hpp
+  ../DB_details.hpp \
+  ../DB_request.hpp \
+  /usr/include/c++/11/list \
+  /usr/include/c++/11/bits/stl_list.h \
+  /usr/include/c++/11/bits/list.tcc \
+  ../DB_data.hpp \
+  ../DB_controller.hpp \
+  ../DB_client.hpp \
+  /usr/include/c++/11/thread \
+  /usr/include/c++/11/bits/std_thread.h \
+  /usr/include/c++/11/bits/this_thread_sleep.h \
+  ../thread_pool.hpp
 
+
+../DB_client.hpp:
+
+/usr/include/c++/11/bits/stl_list.h:
+
+/usr/include/c++/11/list:
+
+../DB_details.hpp:
 
 /usr/include/c++/11/bits/unordered_set.h:
 
 /usr/include/c++/11/bits/deque.tcc:
 
 ../DB_parcer.hpp:
-
-../DB_details.hpp:
-
-/usr/include/c++/11/bits/stl_list.h:
-
-/usr/include/c++/11/list:
 
 ../GTEST_LINUX/googletest/include/gtest/gtest-typed-test.h:
 
@@ -448,6 +455,8 @@ CMakeFiles/TDD_test.dir/tests/tests.cpp.o: ../tests/tests.cpp \
 /usr/include/c++/11/bits/std_mutex.h:
 
 /usr/include/c++/11/bits/parse_numbers.h:
+
+/usr/include/c++/11/thread:
 
 /usr/include/c++/11/ratio:
 
@@ -630,6 +639,8 @@ CMakeFiles/TDD_test.dir/tests/tests.cpp.o: ../tests/tests.cpp \
 /usr/include/x86_64-linux-gnu/bits/types.h:
 
 /usr/include/pthread.h:
+
+/usr/include/c++/11/bits/std_thread.h:
 
 /usr/include/c++/11/bits/stl_iterator_base_funcs.h:
 
@@ -921,7 +932,11 @@ CMakeFiles/TDD_test.dir/tests/tests.cpp.o: ../tests/tests.cpp \
 
 /usr/include/c++/11/bits/atomic_lockfree_defines.h:
 
+../thread_pool.hpp:
+
 /usr/include/c++/11/bits/streambuf_iterator.h:
+
+/usr/include/c++/11/bits/this_thread_sleep.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_tm.h:
 

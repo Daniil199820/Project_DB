@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -shared -Wl,-soname,libDB_control.so -o libDB_control.so CMakeFiles/DB_control.dir/DB_controller.cpp.o 

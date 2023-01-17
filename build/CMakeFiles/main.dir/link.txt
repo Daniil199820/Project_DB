@@ -1,1 +1,1 @@
-/usr/bin/g++ -g -rdynamic CMakeFiles/main.dir/main.cpp.o -o main 
+/usr/bin/g++ -g -rdynamic CMakeFiles/main.dir/main.cpp.o -o main  -Wl,-rpath,/home/daniil/cpp/Project_DB/build libDB_control.so 
