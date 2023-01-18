@@ -16,7 +16,6 @@ struct Column{
 private:
     CUSTOM_TYPE MY_TYPE;
     std::string name_column;
-   // std::variant< std::vector<int>, std::vector<double>, std::vector<std::string>> array;
     int type_idx;
     int idx;
     std::vector< std::variant<int,double,std::string>> array;
@@ -38,7 +37,6 @@ public:
         std::vector<std::string> result_array;
         result_array.emplace_back(name_column);
         if(type_idx == CUSTOM_INT){
-            std::cout<< array.size();
             for(int i = 0; i< array.size(); ++i){
                 result_array.emplace_back(std::to_string(std::get<int> (array[i])));
             }
@@ -61,8 +59,7 @@ public:
             int int_value = 0;
             try{
                 int_value = atoi(value.c_str());
-                array.push_back(int_value);
-                std::cout <<array.size();   
+                array.push_back(int_value);  
             }
             catch(...){
                 throw std::invalid_argument("Error couldn't " + value + "to CUSTOM_INT");
